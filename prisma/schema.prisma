@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model ProductCategory {
+  id        String    @id @default(uuid())
+  name      String
+  nameEn    String?
+  nameAr    String?
+  image     String?
+  order     Int       @default(0)
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model BeforeAfter {
+  id          String   @id @default(uuid())
+  beforeImage String
+  afterImage  String
+  title       String
+  titleEn     String?
+  titleAr     String?
+  description String?
+  descriptionEn String?
+  descriptionAr String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Advantage {
+  id          String   @id @default(uuid())
+  icon        String
+  title       String
+  titleEn     String?
+  titleAr     String?
+  description String
+  descriptionEn String?
+  descriptionAr String?
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AnnouncementBar {
+  id        String   @id @default(uuid())
+  text      String
+  textEn    String?
+  textAr    String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AboutSection {
+  id          String   @id @default(uuid())
+  title       String
+  titleEn     String?
+  titleAr     String?
+  content     String
+  contentEn   String?
+  contentAr   String?
+  image1      String?
+  image2      String?
+  image3      String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model FooterInfo {
+  id        String   @id @default(uuid())
+  address   String
+  addressEn String?
+  addressAr String?
+  phone     String
+  email     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FooterLink {
+  id        String   @id @default(uuid())
+  category  String
+  label     String
+  labelEn   String?
+  labelAr   String?
+  href      String
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
