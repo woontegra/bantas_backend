@@ -22,8 +22,9 @@ build/
 *.tsbuildinfo
 
 # Prisma
-prisma/migrations/*
-!prisma/migrations/.keep
+# Migrations are needed for Railway deployment
+# prisma/migrations/*
+# !prisma/migrations/.keep
 
 # OS
 .DS_Store

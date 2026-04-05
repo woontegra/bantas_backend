@@ -3,50 +3,315 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model ProductCategory {
-  id        String    @id @default(uuid())
+  id            String         @id @default(uuid())
+  name          String
+  nameEn        String?
+  nameAr        String?
+  image         String?
+  order         Int            @default(0)
+  active        Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  slug          String?        @unique
+  description   String?
+  descriptionEn String?
+  descriptionAr String?
+  galleryImages GalleryImage[]
+  products      Product[]
+
+  @@index([slug])
+  @@index([order])
+}
+
+model Product {
+  id               String          @id @default(uuid())
+  name             String
+  nameEn           String?
+  nameAr           String?
+  slug             String          @unique
+  description      String?
+  descriptionEn    String?
+  descriptionAr    String?
+  shortDesc        String?
+  shortDescEn      String?
+  shortDescAr      String?
+  mainImage        String?
+  images           String?
+  specifications   String?
+  specificationsEn String?
+  specificationsAr String?
+  features         String?
+  featuresEn       String?
+  featuresAr       String?
+  categoryId       String
+  order            Int             @default(0)
+  active           Boolean         @default(true)
+  featured         Boolean         @default(false)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  category         ProductCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+  @@index([slug])
+  @@index([order])
+  @@index([featured])
+}
+
+model HomeProductCategory {
+  id            String   @id @default(uuid())
+  name          String
+  nameEn        String?
+  nameAr        String?
+  image         String?
+  description   String?
+  descriptionEn String?
+  descriptionAr String?
+  order         Int      @default(0)
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  link          String?
+
+  @@index([order])
+}
+
+model PdfDocument {
+  id            String   @id @default(uuid())
+  title         String
+  titleEn       String?
+  titleAr       String?
+  description   String?
+  descriptionEn String?
+  descriptionAr String?
+  category      String
+  filePath      String
+  fileSize      Int
+  order         Int      @default(0)
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([category])
+  @@index([order])
+}
+
+model ProductPage {
+  id                    String   @id @default(uuid())
+  slug                  String   @unique
+  order                 Int      @default(0)
+  title                 String
+  titleEn               String?
+  titleAr               String?
+  subtitle              String?
+  subtitleEn            String?
+  subtitleAr            String?
+  description           String?
+  descriptionEn         String?
+  descriptionAr         String?
+  mainImage             String?
+  gallery               String?
+  features              String?
+  featuresEn            String?
+  featuresAr            String?
+  tableData             String?
+  ctaTitle              String?
+  ctaTitleEn            String?
+  ctaTitleAr            String?
+  ctaDescription        String?
+  ctaDescriptionEn      String?
+  ctaDescriptionAr      String?
+  ctaButtonText         String?
+  ctaButtonTextEn       String?
+  ctaButtonTextAr       String?
+  ctaButtonLink         String?
+  active                Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  featureCards          String?
+  featureCardsAr        String?
+  featureCardsEn        String?
+  multipleTables        String?
+  multipleTablesAr      String?
+  multipleTablesEn      String?
+  sidebarItems          String?
+  detailedDescription   String?
+  detailedDescriptionAr String?
+  detailedDescriptionEn String?
+  content               String?
+
+  @@index([slug])
+}
+
+model ContentPage {
+  id         String   @id @default(uuid())
+  slug       String   @unique
+  title      String
+  titleEn    String?
+  titleAr    String?
+  subtitle   String?
+  subtitleEn String?
+  subtitleAr String?
+  content    String?
+  contentEn  String?
+  contentAr  String?
+  images     String?
+  sections   String?
+  sectionsEn String?
+  sectionsAr String?
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([slug])
+}
+
+model PolicyPage {
+  id           String   @id @default(uuid())
+  slug         String   @unique
+  title        String
+  titleEn      String?
+  titleAr      String?
+  sidebarGroup String?
+  content      String?
+  contentEn    String?
+  contentAr    String?
+  order        Int      @default(0)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([slug])
+  @@index([sidebarGroup])
+  @@index([order])
+}
+
+model ListingPage {
+  id         String   @id @default(uuid())
+  slug       String   @unique
+  title      String
+  titleEn    String?
+  titleAr    String?
+  subtitle   String?
+  subtitleEn String?
+  subtitleAr String?
+  items      String?
+  itemsEn    String?
+  itemsAr    String?
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([slug])
+}
+
+model ContactPage {
+  id             String   @id @default(uuid())
+  title          String
+  titleEn        String?
+  titleAr        String?
+  description    String?
+  descriptionEn  String?
+  descriptionAr  String?
+  address        String?
+  addressEn      String?
+  addressAr      String?
+  phone          String?
+  email          String?
+  fax            String?
+  mapEmbed       String?
+  workingHours   String?
+  workingHoursEn String?
+  workingHoursAr String?
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model SiteSettings {
+  id                  String   @id @default(uuid())
+  siteName            String   @default("BANTAS")
+  siteNameEn          String?
+  siteNameAr          String?
+  logo                String?
+  favicon             String?
+  metaTitle           String?
+  metaTitleEn         String?
+  metaTitleAr         String?
+  metaDescription     String?
+  metaDescriptionEn   String?
+  metaDescriptionAr   String?
+  metaKeywords        String?
+  metaKeywordsEn      String?
+  metaKeywordsAr      String?
+  googleAnalyticsId   String?
+  googleTagManagerId  String?
+  facebookPixelId     String?
+  facebookAccessToken String?
+  googleSearchConsole String?
+  facebookUrl         String?
+  twitterUrl          String?
+  instagramUrl        String?
+  linkedinUrl         String?
+  youtubeUrl          String?
+  email               String?
+  phone               String?
+  address             String?
+  addressEn           String?
+  addressAr           String?
+  ePaymentUrl         String?
+  contactSettings     String?
+  maintenanceMode     Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
   name      String
-  nameEn    String?
-  nameAr    String?
-  image     String?
-  order     Int       @default(0)
-  active    Boolean   @default(true)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  email     String
+  phone     String?
+  subject   String?
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([isRead])
+  @@index([createdAt])
 }
 
 model BeforeAfter {
-  id          String   @id @default(uuid())
-  beforeImage String
-  afterImage  String
-  title       String
-  titleEn     String?
-  titleAr     String?
-  description String?
+  id            String   @id @default(uuid())
+  beforeImage   String
+  afterImage    String
+  title         String
+  titleEn       String?
+  titleAr       String?
+  description   String?
   descriptionEn String?
   descriptionAr String?
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Advantage {
-  id          String   @id @default(uuid())
-  icon        String
-  title       String
-  titleEn     String?
-  titleAr     String?
-  description String
+  id            String   @id @default(uuid())
+  icon          String
+  title         String
+  titleEn       String?
+  titleAr       String?
+  description   String
   descriptionEn String?
   descriptionAr String?
-  order       Int      @default(0)
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  order         Int      @default(0)
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model AnnouncementBar {
@@ -60,40 +325,297 @@ model AnnouncementBar {
 }
 
 model AboutSection {
-  id          String   @id @default(uuid())
-  title       String
-  titleEn     String?
-  titleAr     String?
-  content     String
-  contentEn   String?
-  contentAr   String?
-  image1      String?
-  image2      String?
-  image3      String?
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model FooterInfo {
   id        String   @id @default(uuid())
-  address   String
-  addressEn String?
-  addressAr String?
-  phone     String
-  email     String
+  title     String
+  titleEn   String?
+  titleAr   String?
+  content   String
+  contentEn String?
+  contentAr String?
+  image1    String?
+  image2    String?
+  image3    String?
+  active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model FooterLink {
+model MenuCategory {
   id        String   @id @default(uuid())
-  category  String
-  label     String
-  labelEn   String?
-  labelAr   String?
-  href      String
+  title     String
+  titleEn   String?
+  titleAr   String?
+  slug      String   @unique
+  icon      String?
   order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+model Page {
+  id             String     @id @default(uuid())
+  title          String
+  titleEn        String?
+  titleAr        String?
+  slug           String     @unique
+  excerpt        String?
+  excerptEn      String?
+  excerptAr      String?
+  heroImage      String?
+  seoTitle       String?
+  seoDescription String?
+  template       String     @default("default")
+  active         Boolean    @default(true)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  sections       String
+  sectionsAr     String?
+  sectionsEn     String?
+  menuItems      MenuItem[]
+
+  @@index([slug])
+  @@index([active])
+}
+
+model MenuItem {
+  id        String     @id @default(uuid())
+  title     String
+  titleEn   String?
+  titleAr   String?
+  slug      String?
+  order     Int        @default(0)
+  active    Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  icon      String?
+  pageId    String?
+  parentId  String?
+  url       String?
+  page      Page?      @relation(fields: [pageId], references: [id])
+  parent    MenuItem?  @relation("MenuHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children  MenuItem[] @relation("MenuHierarchy")
+
+  @@index([parentId])
+  @@index([order])
+  @@index([active])
+}
+
+model FeaturedContent {
+  id            String   @id @default(uuid())
+  image         String?
+  title         String
+  titleEn       String?
+  titleAr       String?
+  description   String
+  descriptionEn String?
+  descriptionAr String?
+  buttonText    String
+  buttonTextEn  String?
+  buttonTextAr  String?
+  buttonLink    String
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model News {
+  id          String   @id @default(uuid())
+  title       String
+  titleEn     String?
+  titleAr     String?
+  slug        String   @unique
+  excerpt     String?
+  excerptEn   String?
+  excerptAr   String?
+  content     String
+  contentEn   String?
+  contentAr   String?
+  image       String?
+  category    String?
+  categoryEn  String?
+  categoryAr  String?
+  author      String?
+  publishedAt DateTime @default(now())
+  active      Boolean  @default(true)
+  featured    Boolean  @default(false)
+  viewCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@index([publishedAt])
+  @@index([category])
+}
+
+model HeroImage {
+  id            String   @id @default(uuid())
+  position      String   @unique
+  image         String
+  title         String?
+  titleEn       String?
+  titleAr       String?
+  description   String?
+  descriptionEn String?
+  descriptionAr String?
+  link          String?
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([position])
+}
+
+model HeroContent {
+  id            String   @id @default(uuid())
+  title         String
+  titleEn       String?
+  titleAr       String?
+  subtitle      String?
+  subtitleEn    String?
+  subtitleAr    String?
+  description   String?
+  descriptionEn String?
+  descriptionAr String?
+  ctaText       String?
+  ctaTextEn     String?
+  ctaTextAr     String?
+  ctaLink       String?
+  features      String?
+  featuresEn    String?
+  featuresAr    String?
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model HeroSlider {
+  id         String   @id @default(uuid())
+  image      String
+  title      String
+  titleEn    String?
+  titleAr    String?
+  subtitle   String?
+  subtitleEn String?
+  subtitleAr String?
+  ctaText    String?
+  ctaTextEn  String?
+  ctaTextAr  String?
+  ctaLink    String?
+  order      Int      @default(0)
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([order])
+}
+
+model GalleryImage {
+  id            String          @id @default(uuid())
+  categoryId    String
+  image         String
+  title         String?
+  titleEn       String?
+  titleAr       String?
+  description   String?
+  descriptionEn String?
+  descriptionAr String?
+  order         Int             @default(0)
+  active        Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  category      ProductCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+  @@index([order])
+}
+
+model GalleryFeatured {
+  id            String   @id @default(uuid())
+  type          String   @default("management_board")
+  image         String
+  title         String
+  titleEn       String?
+  titleAr       String?
+  description   String?
+  descriptionEn String?
+  descriptionAr String?
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([type])
+}
+
+model FooterSection {
+  id        String       @id @default(uuid())
+  title     String
+  titleEn   String?
+  titleAr   String?
+  order     Int          @default(0)
+  active    Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  links     FooterLink[]
+
+  @@index([order])
+}
+
+model FooterLink {
+  id        String        @id @default(uuid())
+  order     Int           @default(0)
+  active    Boolean       @default(true)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  sectionId String
+  title     String
+  titleAr   String?
+  titleEn   String?
+  url       String
+  section   FooterSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@index([sectionId, order])
+}
+
+model FooterInfo {
+  id              String   @id @default(uuid())
+  address         String
+  addressEn       String?
+  addressAr       String?
+  phone           String
+  email           String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  companyName     String
+  companyNameAr   String?
+  companyNameEn   String?
+  copyrightText   String
+  copyrightTextAr String?
+  copyrightTextEn String?
+  logoUrl         String?
+}
+
+model FooterSocial {
+  id        String   @id @default(uuid())
+  platform  String
+  url       String
+  icon      String
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+model AdminUser {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("admin")
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
