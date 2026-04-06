@@ -36,23 +36,24 @@ const storage = multer.diskStorage({
   }
 });
 
-// File filter - sadece resim dosyalarına izin ver
+// File filter - resim ve PDF dosyalarına izin ver
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png|gif|webp|svg/;
-  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = allowedTypes.test(file.mimetype);
+  const allowedExts = /jpeg|jpg|png|gif|webp|svg|pdf/;
+  const allowedMimes = /image\/(jpeg|jpg|png|gif|webp|svg\+xml)|application\/pdf/;
+  const extname = allowedExts.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = allowedMimes.test(file.mimetype);
 
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb(new Error('Sadece resim dosyaları yüklenebilir!'));
+    cb(new Error('Sadece resim ve PDF dosyaları yüklenebilir!'));
   }
 };
 
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
+    fileSize: 20 * 1024 * 1024 // 20MB limit (PDF için artırıldı)
   },
   fileFilter: fileFilter
 });
