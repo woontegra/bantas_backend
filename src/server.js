@@ -31,6 +31,7 @@ import policyPagesRoutes from './routes/policyPages.js';
 import listingPagesRoutes from './routes/listingPages.js';
 import contactPageRoutes from './routes/contactPage.js';
 import mediaRoutes from './routes/media.js';
+import syncFilesRoutes from './routes/syncFiles.js';
 
 dotenv.config();
 
@@ -94,6 +95,7 @@ app.use('/api/policy-pages', policyPagesRoutes);
 app.use('/api/listing-pages', listingPagesRoutes);
 app.use('/api/contact-page', contactPageRoutes);
 app.use('/api/media', mediaRoutes);
+app.use('/api/sync-files', syncFilesRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Bantas API is running' });
