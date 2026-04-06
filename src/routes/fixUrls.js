@@ -35,10 +35,10 @@ router.post('/', async (req, res) => {
     }
 
     // Hero slides
-    const heroes = await prisma.heroSlide.findMany();
+    const heroes = await prisma.heroSlider.findMany();
     for (const h of heroes) {
       if (h.image?.startsWith(OLD)) {
-        await prisma.heroSlide.update({
+        await prisma.heroSlider.update({
           where: { id: h.id },
           data: { image: h.image.replace(OLD, '') },
         });
