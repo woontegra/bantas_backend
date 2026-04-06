@@ -1,8 +1,28 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 const router = express.Router();
 const prisma = new PrismaClient();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(__dirname, '../../uploads/gallery');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `gallery-${Date.now()}${ext}`);
+  },
+});
+const upload = multer({ storage, limits: { fileSize: 20 * 1024 * 1024 } });
 
 // ===== GALLERY CATEGORIES (Using ProductCategory) =====
 
@@ -100,13 +120,13 @@ router.get('/images/:id', async (req, res) => {
 });
 
 // Create image
-router.post('/images', async (req, res) => {
+router.post('/images', upload.single('image'), async (req, res) => {
   try {
+    const data = { ...req.body };
+    if (req.file) data.image = `/uploads/gallery/${req.file.filename}`;
     const image = await prisma.galleryImage.create({
-      data: req.body,
-      include: {
-        category: true,
-      },
+      data,
+      include: { category: true },
     });
     res.status(201).json(image);
   } catch (error) {
@@ -115,14 +135,14 @@ router.post('/images', async (req, res) => {
 });
 
 // Update image
-router.put('/images/:id', async (req, res) => {
+router.put('/images/:id', upload.single('image'), async (req, res) => {
   try {
+    const data = { ...req.body };
+    if (req.file) data.image = `/uploads/gallery/${req.file.filename}`;
     const image = await prisma.galleryImage.update({
       where: { id: req.params.id },
-      data: req.body,
-      include: {
-        category: true,
-      },
+      data,
+      include: { category: true },
     });
     res.json(image);
   } catch (error) {
